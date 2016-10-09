@@ -146,6 +146,11 @@ export default DS.JSONSerializer.extend({
       included: []
     };
 
+    let meta = this.extractMeta(store, primaryModelClass, payload);
+    if (meta) {
+       documentHash.meta = meta;
+    }
+
     if (isSingle) {
       let {
         data,
@@ -203,5 +208,27 @@ export default DS.JSONSerializer.extend({
     }
 
     return documentHash;
+  },
+
+  /**
+    @method extractMeta
+    @param {DS.Store} store
+    @param {DS.Model} modelClass
+    @param {Object} payload
+  **/
+  extractMeta(store, modelClass, payload) {
+    if (payload) {
+      let meta = {};
+      if (payload.hasOwnProperty('limit')) {
+        meta.limit = payload.limit;
+      }
+      if (payload.hasOwnProperty('skip')) {
+        meta.skip = payload.skip;
+      }
+      if (payload.hasOwnProperty('total')) {
+        meta.total = payload.total;
+      }
+      return meta;
+    }
   }
 });
